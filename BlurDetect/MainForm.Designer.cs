@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.imageProcessPanel2 = new BlurDetect.ImageProcessPanel();
             this.imageProcessPanel1 = new BlurDetect.ImageProcessPanel();
             this.SuspendLayout();
@@ -64,6 +65,7 @@
             this.Controls.Add(this.imageProcessPanel2);
             this.Controls.Add(this.imageProcessPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "MainForm";
