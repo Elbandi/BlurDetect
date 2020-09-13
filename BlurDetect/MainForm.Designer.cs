@@ -28,34 +28,43 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.blurDetectBackgroundWorker = new System.ComponentModel.BackgroundWorker();
-            this.labelBlur = new System.Windows.Forms.Label();
+            this.imageProcessPanel2 = new BlurDetect.ImageProcessPanel();
+            this.imageProcessPanel1 = new BlurDetect.ImageProcessPanel();
             this.SuspendLayout();
             // 
-            // blurDetectBackgroundWorker
+            // imageProcessPanel2
             // 
-            this.blurDetectBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.blurDetectBackgroundWorker_DoWork);
-            this.blurDetectBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.blurDetectBackgroundWorker_RunWorkerCompleted);
+            this.imageProcessPanel2.AllowDrop = true;
+            this.imageProcessPanel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.imageProcessPanel2.Location = new System.Drawing.Point(0, 290);
+            this.imageProcessPanel2.Margin = new System.Windows.Forms.Padding(2);
+            this.imageProcessPanel2.MaximumSize = new System.Drawing.Size(514, 290);
+            this.imageProcessPanel2.MinimumSize = new System.Drawing.Size(514, 290);
+            this.imageProcessPanel2.Name = "imageProcessPanel2";
+            this.imageProcessPanel2.Size = new System.Drawing.Size(514, 290);
+            this.imageProcessPanel2.TabIndex = 1;
             // 
-            // labelBlur
+            // imageProcessPanel1
             // 
-            this.labelBlur.AllowDrop = true;
-            this.labelBlur.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelBlur.Location = new System.Drawing.Point(0, 0);
-            this.labelBlur.Name = "labelBlur";
-            this.labelBlur.Size = new System.Drawing.Size(582, 353);
-            this.labelBlur.TabIndex = 0;
-            this.labelBlur.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelBlur.DragDrop += new System.Windows.Forms.DragEventHandler(this.labelBlur_DragDrop);
-            this.labelBlur.DragEnter += new System.Windows.Forms.DragEventHandler(this.labelBlur_DragEnter);
+            this.imageProcessPanel1.AllowDrop = true;
+            this.imageProcessPanel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.imageProcessPanel1.Location = new System.Drawing.Point(0, 0);
+            this.imageProcessPanel1.Margin = new System.Windows.Forms.Padding(2);
+            this.imageProcessPanel1.MaximumSize = new System.Drawing.Size(514, 290);
+            this.imageProcessPanel1.MinimumSize = new System.Drawing.Size(514, 290);
+            this.imageProcessPanel1.Name = "imageProcessPanel1";
+            this.imageProcessPanel1.Size = new System.Drawing.Size(514, 290);
+            this.imageProcessPanel1.TabIndex = 0;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(582, 353);
-            this.Controls.Add(this.labelBlur);
+            this.ClientSize = new System.Drawing.Size(516, 581);
+            this.Controls.Add(this.imageProcessPanel2);
+            this.Controls.Add(this.imageProcessPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Blur Detect";
@@ -65,8 +74,8 @@
 
         #endregion
 
-        private System.ComponentModel.BackgroundWorker blurDetectBackgroundWorker;
-        private System.Windows.Forms.Label labelBlur;
+        private ImageProcessPanel imageProcessPanel1;
+        private ImageProcessPanel imageProcessPanel2;
     }
 }
 
