@@ -110,6 +110,12 @@ namespace BlurDetect
         {
             if (!e.Cancelled)
             {
+                if (e.Error != null)
+                {
+                    labelBlur.BackColor = SystemColors.Control;
+                    labelBlur.Text = e.Error.Message;
+                    histogramPictureBox.Image = null;
+                }
                 DetectResult result = e.Result as DetectResult;
                 labelBlur.BackColor = SystemColors.Control;
                 labelBlur.Text = string.Format("{0}: {1}", result.FileName, result.Blur);
@@ -118,7 +124,7 @@ namespace BlurDetect
             }
             else
             {
-                labelBlur.BackColor = Color.Red;
+                labelBlur.BackColor = SystemColors.Control;
             }
         }
 
