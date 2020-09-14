@@ -42,68 +42,94 @@ namespace BlurDetect
             blurDetectBackgroundWorker.RunWorkerAsync(files[0]);
         }
 
+        private double GetBlurValue(Mat mat)
+        {
+            using (Mat lap = mat.Laplacian(MatType.CV_64F))
+            {
+                Scalar mean, stddev;
+                Cv2.MeanStdDev(lap, out mean, out stddev);
+                return stddev.Val0 * stddev.Val0;
+            }
+        }
         private void blurDetectBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
-            string fileName = e.Argument as string;
-            Mat src = Cv2.ImRead(fileName);
-            Mat mat = src.CvtColor(ColorConversionCodes.BGR2GRAY);
-            Mat lap = mat.Laplacian(MatType.CV_64F);
-            Scalar mean, stddev;
-            Cv2.MeanStdDev(lap, out mean, out stddev);
-
-            int[] dimensions = { 256 };
-            Rangef[] ranges = { new Rangef(1, 256) };
-
-            Mat HistR = new Mat();
-            Mat HistG = new Mat();
-            Mat HistB = new Mat();
-            Mat HistGray = new Mat();
-
-            //Mat[] mv = img.Split();
-            //Cv2.CalcHist(new Mat[] { mv[0] }, new int[] { 0 }, null, HistB, 1, dimensions, ranges);
-            //Cv2.CalcHist(new Mat[] { mv[1] }, new int[] { 0 }, null, HistG, 1, dimensions, ranges);
-            //Cv2.CalcHist(new Mat[] { mv[2] }, new int[] { 0 }, null, HistR, 1, dimensions, ranges);
-
-            Cv2.CalcHist(new Mat[] { src }, new int[] { 0 }, null, HistB, 1, dimensions, ranges);
-            Cv2.CalcHist(new Mat[] { src }, new int[] { 1 }, null, HistG, 1, dimensions, ranges);
-            Cv2.CalcHist(new Mat[] { src }, new int[] { 2 }, null, HistR, 1, dimensions, ranges);
-
-            Cv2.CalcHist(new Mat[] { mat }, new int[] { 0 }, null, HistGray, 1, dimensions, ranges);
-
-            Cv2.Normalize(HistR, HistR, 0, 256, NormTypes.MinMax);
-            Cv2.Normalize(HistG, HistG, 0, 256, NormTypes.MinMax);
-            Cv2.Normalize(HistB, HistB, 0, 256, NormTypes.MinMax);
-            Cv2.Normalize(HistGray, HistGray, 0, 256, NormTypes.MinMax);
-
-            Mat histogram = new Mat(256, 512, MatType.CV_8UC3, Scalar.White);
-            for (int i = 1; i < 256; i++)
+            try
             {
-//                Console.WriteLine("{0}, {1}, {2}", HistR.At<float>(i), HistG.At<float>(i), HistB.At<float>(i));
-                Cv2.Line(histogram,
-                    new OpenCvSharp.Point(2 * (i - 1), 256 - Convert.ToInt32(HistR.Get<float>(i - 1))),
-                    new OpenCvSharp.Point(2 * i, 256 - Convert.ToInt32(HistR.Get<float>(i))),
-                    Scalar.Red);
-                Cv2.Line(histogram,
-                    new OpenCvSharp.Point(2 * (i - 1), 256 - Convert.ToInt32(HistG.Get<float>(i - 1))),
-                    new OpenCvSharp.Point(2 * i, 256 - Convert.ToInt32(HistG.Get<float>(i))),
-                    Scalar.Green);
-                Cv2.Line(histogram,
-                    new OpenCvSharp.Point(2 * (i - 1), 256 - Convert.ToInt32(HistB.Get<float>(i - 1))),
-                    new OpenCvSharp.Point(2 * i, 256 - Convert.ToInt32(HistB.Get<float>(i))),
-                    Scalar.Blue);
-                Cv2.Line(histogram,
-                    new OpenCvSharp.Point(2 * (i - 1), 256 - Convert.ToInt32(HistGray.Get<float>(i - 1))),
-                    new OpenCvSharp.Point(2 * i, 256 - Convert.ToInt32(HistGray.Get<float>(i))),
-                    Scalar.Black);
+                string fileName = e.Argument as string;
+                using (Mat src = Cv2.ImRead(fileName))
+                {
+                    using (Mat mat = src.CvtColor(ColorConversionCodes.BGR2GRAY))
+                    {
+                        int[] dimensions = { 256 };
+                        Rangef[] ranges = { new Rangef(1, 256) };
+
+                        Mat HistR = new Mat();
+                        Mat HistG = new Mat();
+                        Mat HistB = new Mat();
+                        Mat HistGray = new Mat();
+                        try
+                        {
+                            //Mat[] mv = img.Split();
+                            //Cv2.CalcHist(new Mat[] { mv[0] }, new int[] { 0 }, null, HistB, 1, dimensions, ranges);
+                            //Cv2.CalcHist(new Mat[] { mv[1] }, new int[] { 0 }, null, HistG, 1, dimensions, ranges);
+                            //Cv2.CalcHist(new Mat[] { mv[2] }, new int[] { 0 }, null, HistR, 1, dimensions, ranges);
+
+                            Cv2.CalcHist(new Mat[] { src }, new int[] { 0 }, null, HistB, 1, dimensions, ranges);
+                            Cv2.CalcHist(new Mat[] { src }, new int[] { 1 }, null, HistG, 1, dimensions, ranges);
+                            Cv2.CalcHist(new Mat[] { src }, new int[] { 2 }, null, HistR, 1, dimensions, ranges);
+
+                            Cv2.CalcHist(new Mat[] { mat }, new int[] { 0 }, null, HistGray, 1, dimensions, ranges);
+
+                            Cv2.Normalize(HistR, HistR, 0, 256, NormTypes.MinMax);
+                            Cv2.Normalize(HistG, HistG, 0, 256, NormTypes.MinMax);
+                            Cv2.Normalize(HistB, HistB, 0, 256, NormTypes.MinMax);
+                            Cv2.Normalize(HistGray, HistGray, 0, 256, NormTypes.MinMax);
+
+                            Mat histogram = new Mat(256, 512, MatType.CV_8UC3, Scalar.White);
+                            for (int i = 1; i < 256; i++)
+                            {
+                                // Console.WriteLine("{0}, {1}, {2}", HistR.At<float>(i), HistG.At<float>(i), HistB.At<float>(i));
+                                Cv2.Line(histogram,
+                                    new OpenCvSharp.Point(2 * (i - 1), 256 - Convert.ToInt32(HistR.Get<float>(i - 1))),
+                                    new OpenCvSharp.Point(2 * i, 256 - Convert.ToInt32(HistR.Get<float>(i))),
+                                    Scalar.Red);
+                                Cv2.Line(histogram,
+                                    new OpenCvSharp.Point(2 * (i - 1), 256 - Convert.ToInt32(HistG.Get<float>(i - 1))),
+                                    new OpenCvSharp.Point(2 * i, 256 - Convert.ToInt32(HistG.Get<float>(i))),
+                                    Scalar.Green);
+                                Cv2.Line(histogram,
+                                    new OpenCvSharp.Point(2 * (i - 1), 256 - Convert.ToInt32(HistB.Get<float>(i - 1))),
+                                    new OpenCvSharp.Point(2 * i, 256 - Convert.ToInt32(HistB.Get<float>(i))),
+                                    Scalar.Blue);
+                                Cv2.Line(histogram,
+                                    new OpenCvSharp.Point(2 * (i - 1), 256 - Convert.ToInt32(HistGray.Get<float>(i - 1))),
+                                    new OpenCvSharp.Point(2 * i, 256 - Convert.ToInt32(HistGray.Get<float>(i))),
+                                    Scalar.Black);
+                            }
+                            Bitmap HistogramGraph = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(histogram);
+                            e.Result = new DetectResult
+                            {
+                                FileName = Path.GetFileName(fileName),
+                                Blur = GetBlurValue(mat),
+                                // Histogram = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(GetHistogram(src)),
+                                Histogram = HistogramGraph.Clone() as Bitmap,
+                            };
+                            HistogramGraph.Dispose();
+                        }
+                        finally
+                        {
+                            HistR.Dispose();
+                            HistG.Dispose();
+                            HistB.Dispose();
+                            HistGray.Dispose();
+                        }
+                    }
+                }
             }
-
-            e.Result = new DetectResult
+            finally
             {
-                FileName = Path.GetFileName(fileName),
-                Blur = stddev.Val0 * stddev.Val0,
-                //                Histogram = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(GetHistogram(src)),
-                Histogram = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(histogram),
-            };
+                GC.Collect();
+            }
         }
 
         private void blurDetectBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
